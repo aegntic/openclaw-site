@@ -334,7 +334,8 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
                 <h2 className="section-heading" style={{marginTop:"14px"}}>Reasonably priced. Immediately useful.</h2>
                 <p>Built for builders who want signal fast, not a bloated course with 47 modules and a fake countdown timer.</p>
                 <div className="price">$29 <span className="strike">$79</span></div>
-                <p className="muted">One-time. Digital delivery. Start with the free alpha on this page, then take the compressed full stack when you want the clean architecture in one place.</p>
+                <p className="muted">One-time payment. <strong>No subscription.</strong> No recurring fees. Ever.</p>
+                <p className="muted" style={{marginTop:"8px"}}>Digital delivery. Start with the free alpha on this page, then take the compressed full stack when you want the clean architecture in one place.</p>
                 <div className="cta-row">
                   <a className="btn btn-primary" href="https://yourdomain.com/buy">Buy the blueprint</a>
                   <a className="btn btn-secondary" href="#faq">See FAQ</a>
@@ -380,9 +381,6 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
         </div>
       </section>
 
-      <div className="sticky-cta">
-        <a className="btn btn-primary" href="https://yourdomain.com/buy">Get the Blueprint — $29</a>
-      </div>
     </>
   );
 }
