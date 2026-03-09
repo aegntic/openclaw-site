@@ -1,36 +1,16 @@
 "use client";
 
-import { useState } from "react";
-
 interface CheckoutButtonProps {
-  priceId: string;
   label: string;
   variant?: "primary" | "secondary";
 }
 
-export function CheckoutButton({ priceId, label, variant = "primary" }: CheckoutButtonProps) {
-  const [loading, setLoading] = useState(false);
+export function CheckoutButton({ label, variant = "primary" }: CheckoutButtonProps) {
+  const paymentLink = process.env.NEXT_PUBLIC_STRIPE_STUDIO_PAYMENT_LINK;
 
-  const handleCheckout = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId }),
-      });
-
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert("Failed to start checkout");
-      }
-    } catch (error) {
-      console.error("Checkout error:", error);
-      alert("Failed to start checkout");
-    } finally {
-      setLoading(false);
+  const handleCheckout = () => {
+    if (paymentLink) {
+      window.location.href = paymentLink;
     }
   };
 
@@ -42,10 +22,10 @@ export function CheckoutButton({ priceId, label, variant = "primary" }: Checkout
   return (
     <button
       onClick={handleCheckout}
-      disabled={loading || !priceId}
+      disabled={!paymentLink}
       className={`${baseStyles} ${variantStyles} disabled:opacity-50 disabled:cursor-not-allowed`}
     >
-      {loading ? "Processing..." : label}
+      {label}
     </button>
   );
 }

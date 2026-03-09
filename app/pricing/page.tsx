@@ -1,13 +1,28 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { SectionHeading } from "@/components/section-heading";
 import { launchPaths } from "@/lib/site";
 import { CheckoutButton } from "@/components/checkout-button";
 
 export default function PricingPage() {
+  const searchParams = useSearchParams();
+  const success = searchParams.get("success");
+  const canceled = searchParams.get("canceled");
+
   return (
     <div className="page-hero">
       <div className="container">
+        {success && (
+          <div className="success-banner">
+            ✅ Payment successful! Check your email for confirmation.
+          </div>
+        )}
+        {canceled && (
+          <div className="cancel-banner">
+            ❌ Payment was canceled. Try again when ready.
+          </div>
+        )}
         <SectionHeading
           eyebrow="Launch paths"
           title="Three ways to package the motion"
@@ -24,13 +39,10 @@ export default function PricingPage() {
                   <li key={bullet}>{bullet}</li>
                 ))}
               </ul>
-              {path.priceId ? (
-                <CheckoutButton
-                  priceId={path.priceId}
-                  label="Get Started"
-                />
+              {path.name === "Studio" ? (
+                <CheckoutButton label="Get Started" />
               ) : path.name === "Enterprise Partner" ? (
-                <a href="mailto:contact@openclaw.ai" className="btn btn-secondary">
+                <a href="mailto:contact@openclaw.ai?subject=OpenClaw%20Enterprise%20Inquiry" className="btn btn-secondary">
                   Contact Sales
                 </a>
               ) : (
