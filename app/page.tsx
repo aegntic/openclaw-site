@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function HomePage() {
   useEffect(() => {
     const wordTargets = document.querySelectorAll(
-      ".hero .eyebrow, .hero .sub, .hero .micro, p.lead, .notice, .price, summary, footer .wrap > div"
+      ".hero .eyebrow, .hero .sub, .hero .micro, p.lead, .notice, summary, footer .wrap > div"
     );
 
     function splitWordsInNode(node: Node): Node {
@@ -95,7 +95,7 @@ export default function HomePage() {
       });
     });
 
-    gsap.utils.toArray("p.lead, .notice, .price, summary, footer .wrap > div").forEach((el, index) => {
+    gsap.utils.toArray("p.lead, .notice, summary, footer .wrap > div").forEach((el, index) => {
       const words = (el as Element).querySelectorAll(".word");
       if (!words.length) return;
 
@@ -128,6 +128,47 @@ export default function HomePage() {
         }
       });
     });
+
+    // Price flip animation
+    const priceEl = document.getElementById("price-flip");
+    if (priceEl) {
+      const initial = priceEl.querySelector(".price-initial") as HTMLElement | null;
+      const final = priceEl.querySelector(".price-final") as HTMLElement | null;
+      const priceNew = final?.querySelector(".price-new") as HTMLElement | null;
+      const priceOld = priceEl.querySelector(".price-old") as HTMLElement | null;
+
+      if (initial && final && priceNew) {
+        gsap.set(final, { display: "none" });
+        gsap.set(initial, { display: "inline" });
+
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: "#pricing",
+            start: "top 70%",
+            once: true
+          }
+        })
+          .to(initial, {
+            rotateX: 90,
+            y: -20,
+            opacity: 0,
+            duration: 0.4,
+            ease: "power2.in",
+            transformOrigin: "50% 100%"
+          })
+          .set(initial, { display: "none" })
+          .set(final, { display: "inline" })
+          .fromTo(priceNew,
+            { rotateX: -90, y: 20, opacity: 0 },
+            { rotateX: 0, y: 0, opacity: 1, duration: 0.5, ease: "power2.out", transformOrigin: "50% 0%" }
+          )
+          .fromTo(priceOld,
+            { opacity: 0, x: -10 },
+            { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" },
+          "-=0.2"
+          );
+      }
+    }
 
     gsap.to(".hero .hero-card:first-child", {
       y: 10,
@@ -200,7 +241,7 @@ export default function HomePage() {
           </h1>
           <p className="sub">A simple, sharp blueprint for <strong>OpenClaw multi-agent architecture</strong>: <strong>Genesis Agent</strong>, <strong>Agent Registry</strong>, <strong>Scheduler</strong>, <strong>Dispatcher</strong>, <strong>Lifecycle</strong>, <strong>Contracts</strong>, and the specialist AI worker pattern that actually scales.</p>
           <div className="cta-row">
-            <a className="btn btn-primary" href="https://yourdomain.com/buy">Get instant access — $29</a>
+            <a className="btn btn-primary" href="https://yourdomain.com/buy">Get instant access</a>
             <a className="btn btn-secondary" href="#free">Read the free alpha first</a>
           </div>
           <div className="micro">Useful immediately. No fluff. No inflated guru haze. Built for people already in the arena.</div>
@@ -333,7 +374,13 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
                 <div className="notice">Low-friction entry offer</div>
                 <h2 className="section-heading" style={{marginTop:"14px"}}>Reasonably priced. Immediately useful.</h2>
                 <p>Built for builders who want signal fast, not a bloated course with 47 modules and a fake countdown timer.</p>
-                <div className="price">$29 <span className="strike">$79</span></div>
+                <div className="price" id="price-flip">
+                  <span className="price-initial">$79</span>
+                  <span className="price-final">
+                    <span className="price-new">$29</span>
+                    <span className="price-old">$79</span>
+                  </span>
+                </div>
                 <p className="muted">One-time payment. <strong>No subscription.</strong> No recurring fees. Ever.</p>
                 <p className="muted" style={{marginTop:"8px"}}>Digital delivery. Start with the free alpha on this page, then take the compressed full stack when you want the clean architecture in one place.</p>
                 <div className="cta-row">

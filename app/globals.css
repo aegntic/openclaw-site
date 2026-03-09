@@ -258,8 +258,12 @@ h3 { margin: 0 0 8px; font-size: 18px; }
 section { padding: 22px 0; }
 
 #free {
-  padding-top: 0;
-  margin-top: -8px;
+  padding-top: 48px;
+  margin-top: 0;
+}
+
+#free h2 {
+  font-size: clamp(38px, 5.8vw, 64px);
 }
 
 .section { padding: 22px 0; }
@@ -308,6 +312,29 @@ section { padding: 22px 0; }
   font-size: 64px;
   line-height: 1;
   letter-spacing: -.05em;
+  perspective: 400px;
+}
+
+.price-initial {
+  display: inline-block;
+}
+
+.price-final {
+  display: none;
+}
+
+.price-new {
+  display: inline-block;
+  color: var(--text);
+}
+
+.price-old {
+  display: inline-block;
+  text-decoration: line-through;
+  color: #8a8a8a;
+  font-size: 24px;
+  margin-left: 8px;
+  opacity: 0;
 }
 
 .strike {
