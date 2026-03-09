@@ -14,10 +14,12 @@
   "dependencies": {
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@types/stripe": "^8.0.416",
     "gsap": "^3.14.2",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "stripe": "^20.4.1"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "latest",
