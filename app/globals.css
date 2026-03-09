@@ -312,7 +312,32 @@ section { padding: 22px 0; }
   font-size: 64px;
   line-height: 1;
   letter-spacing: -.05em;
-  perspective: 400px;
+  perspective: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.price-prefix {
+  display: inline-block;
+}
+
+.price-digits {
+  display: inline-flex;
+}
+
+.price-digits span {
+  display: inline-block;
+  transform-style: preserve-3d;
+}
+
+.price-old-final {
+  display: inline-block;
+  text-decoration: line-through;
+  color: #8a8a8a;
+  font-size: 24px;
+  margin-left: 8px;
+  opacity: 1;
 }
 
 .price-initial {

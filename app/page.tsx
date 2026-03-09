@@ -129,44 +129,60 @@ export default function HomePage() {
       });
     });
 
-    // Price flip animation
+    // Price flip animation - alarm clock countdown
     const priceEl = document.getElementById("price-flip");
     if (priceEl) {
-      const initial = priceEl.querySelector(".price-initial") as HTMLElement | null;
-      const final = priceEl.querySelector(".price-final") as HTMLElement | null;
-      const priceNew = final?.querySelector(".price-new") as HTMLElement | null;
-      const priceOld = priceEl.querySelector(".price-old") as HTMLElement | null;
+      const tensDigit = priceEl.querySelector(".digit-tens") as HTMLElement | null;
+      const onesDigit = priceEl.querySelector(".digit-ones") as HTMLElement | null;
 
-      if (initial && final && priceNew) {
-        gsap.set(final, { display: "none" });
-        gsap.set(initial, { display: "inline" });
-
+      if (tensDigit && onesDigit) {
         gsap.timeline({
           scrollTrigger: {
             trigger: "#pricing",
             start: "top 70%",
             once: true
-          }
+          },
+          delay: 0.5
         })
-          .to(initial, {
-            rotateX: 90,
-            y: -20,
-            opacity: 0,
-            duration: 0.4,
-            ease: "power2.in",
-            transformOrigin: "50% 100%"
-          })
-          .set(initial, { display: "none" })
-          .set(final, { display: "inline" })
-          .fromTo(priceNew,
-            { rotateX: -90, y: 20, opacity: 0 },
-            { rotateX: 0, y: 0, opacity: 1, duration: 0.5, ease: "power2.out", transformOrigin: "50% 0%" }
-          )
-          .fromTo(priceOld,
+        // Flip tens digit from 7 to 2
+        .to(tensDigit, {
+          rotateX: -90,
+          duration: 0.15,
+          ease: "power2.in",
+          transformOrigin: "50% 50% 20px"
+        })
+        .call(() => { tensDigit.textContent = "2"; })
+        .to(tensDigit, {
+          rotateX: -180,
+          duration: 0.15,
+          ease: "power2.out"
+        })
+        .set(tensDigit, { rotateX: 0 })
+        // Flip ones digit from 9 to 9 (bounce effect)
+        .to(onesDigit, {
+          rotateX: -90,
+          duration: 0.15,
+          ease: "power2.in",
+          transformOrigin: "50% 50% 20px"
+        }, "-=0.1")
+        .call(() => { onesDigit.textContent = "9"; })
+        .to(onesDigit, {
+          rotateX: -180,
+          duration: 0.15,
+          ease: "power2.out"
+        })
+        .set(onesDigit, { rotateX: 0 })
+        // Add struck-through $79
+        .call(() => {
+          const oldPrice = document.createElement("span");
+          oldPrice.className = "price-old-final";
+          oldPrice.textContent = " $79";
+          priceEl.appendChild(oldPrice);
+          gsap.fromTo(oldPrice,
             { opacity: 0, x: -10 },
-            { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" },
-          "-=0.2"
+            { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
           );
+        });
       }
     }
 
@@ -375,10 +391,10 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
                 <h2 className="section-heading" style={{marginTop:"14px"}}>Reasonably priced. Immediately useful.</h2>
                 <p>Built for builders who want signal fast, not a bloated course with 47 modules and a fake countdown timer.</p>
                 <div className="price" id="price-flip">
-                  <span className="price-initial">$79</span>
-                  <span className="price-final">
-                    <span className="price-new">$29</span>
-                    <span className="price-old">$79</span>
+                  <span className="price-prefix">$</span>
+                  <span className="price-digits">
+                    <span className="digit-tens">7</span>
+                    <span className="digit-ones">9</span>
                   </span>
                 </div>
                 <p className="muted">One-time payment. <strong>No subscription.</strong> No recurring fees. Ever.</p>
