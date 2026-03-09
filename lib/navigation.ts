@@ -1,14 +1,10 @@
 export const navLinks = [
-  { href: "/platform", label: "Platform" },
-  { href: "/architecture", label: "Architecture" },
-  { href: "/docs", label: "Docs" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/contact", label: "Contact" }
+  { href: "/#free", label: "Free Alpha" },
+  { href: "/#inside", label: "What You Get" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/#faq", label: "FAQ" }
 ] as const;
 
 export const docsLinks = [
-  { href: "/docs", label: "Docs Home" },
-  { href: "/docs/new-here", label: "New Here" },
-  { href: "/docs/getting-started", label: "Getting Started" },
-  { href: "/docs/concepts", label: "Concepts" }
+  { href: "#docs", label: "Docs Home" },
 ] as const;
