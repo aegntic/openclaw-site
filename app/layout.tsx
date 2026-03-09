@@ -7,21 +7,23 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: site.title,
+    default: "OpenClaw Agent Blueprint | Genesis Agent, Agent Registry, Scheduler & Multi-Agent System Architecture",
     template: `%s | ${site.name}`
   },
-  description: site.description,
+  description: "OpenClaw Agent Blueprint is a practical guide to Genesis Agents, Agent Registries, schedulers, dispatchers, contracts, lifecycle systems, and specialist AI workers for scalable multi-agent architecture.",
+  keywords: "OpenClaw, agent architecture, Genesis agent, agent registry, multi-agent system, AI orchestration, scheduler, dispatcher, agent lifecycle, prompt engineering, agent OS",
+  authors: [{ name: "Mattae Cooper" }],
   openGraph: {
-    title: site.title,
-    description: site.description,
+    title: "OpenClaw Agent Blueprint",
+    description: "A practical OpenClaw guide to Genesis Agents, Agent Registries, schedulers, dispatchers, contracts, lifecycle systems, and scalable multi-agent architecture.",
     url: site.url,
     siteName: site.name,
     type: "website"
   },
   twitter: {
     card: "summary_large_image",
-    title: site.title,
-    description: site.description
+    title: "OpenClaw Agent Blueprint",
+    description: "Genesis Agent, Agent Registry, Scheduler, Dispatcher, Contracts, Lifecycle, Memory Fabric, and specialist worker design for OpenClaw-style systems."
   }
 };
 
@@ -29,7 +31,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <div className="site-bg" />
         <Header />
         <main>{children}</main>
         <Footer />

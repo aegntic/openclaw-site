@@ -1,28 +1,18 @@
 import Link from "next/link";
-import { navLinks } from "@/lib/navigation";
 
 export function Header() {
   return (
-    <header className="site-header">
-      <div className="container nav-shell">
-        <Link href="/" className="brand-mark" aria-label="OpenClaw home">
-          <span className="brand-dot" />
-          <span>OpenClaw</span>
-        </Link>
-        <nav className="nav-links" aria-label="Primary">
-          {navLinks.map((item) => (
-            <Link key={item.href} href={item.href}>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="nav-actions">
-          <a className="button ghost" href="#waitlist">Join waitlist</a>
-          <Link className="button primary" href="/docs/new-here">
-            Start here
-          </Link>
+    <div className="nav">
+      <div className="wrap nav-inner">
+        <Link className="brand" href="/">AEGNTIC / OpenClaw Blueprint</Link>
+        <div className="nav-links">
+          <Link href="#free">Free Alpha</Link>
+          <Link href="#inside">What You Get</Link>
+          <Link href="#pricing">Pricing</Link>
+          <Link href="#faq">FAQ</Link>
         </div>
+        <Link className="btn btn-primary" href="#waitlist">Get the Blueprint</Link>
       </div>
-    </header>
+    </div>
   );
 }
