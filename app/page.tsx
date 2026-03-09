@@ -257,7 +257,7 @@ export default function HomePage() {
           </h1>
           <p className="sub">A simple, sharp blueprint for <strong>OpenClaw multi-agent architecture</strong>: <strong>Genesis Agent</strong>, <strong>Agent Registry</strong>, <strong>Scheduler</strong>, <strong>Dispatcher</strong>, <strong>Lifecycle</strong>, <strong>Contracts</strong>, and the specialist AI worker pattern that actually scales.</p>
           <div className="cta-row">
-            <a className="btn btn-primary" href="https://yourdomain.com/buy">Get instant access</a>
+            <a className="btn btn-primary" href="/pricing">Get instant access</a>
             <a className="btn btn-secondary" href="#free">Read the free alpha first</a>
           </div>
           <div className="micro">Useful immediately. No fluff. No inflated guru haze. Built for people already in the arena.</div>
@@ -400,7 +400,7 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
                 <p className="muted">One-time payment. <strong>No subscription.</strong> No recurring fees. Ever.</p>
                 <p className="muted" style={{marginTop:"8px"}}>Digital delivery. Start with the free alpha on this page, then take the compressed full stack when you want the clean architecture in one place.</p>
                 <div className="cta-row">
-                  <a className="btn btn-primary" href="https://yourdomain.com/buy">Buy the blueprint</a>
+                  <a className="btn btn-primary" href="/pricing">Buy the blueprint</a>
                   <a className="btn btn-secondary" href="#faq">See FAQ</a>
                 </div>
               </div>
