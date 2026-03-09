@@ -90,7 +90,7 @@ export const launchPaths = [
   },
   {
     name: "Studio",
-    price: "$297/mo",
+    price: "$29/mo",
     priceId: process.env.NEXT_PUBLIC_STRIPE_STUDIO_PRICE_ID || "price_STUDIO-placeholder",
     summary: "For teams shaping internal agent infrastructure and wanting a sharper market-facing front door.",
     bullets: [
