@@ -79,6 +79,7 @@ export const launchPaths = [
   {
     name: "Core",
     price: "Free",
+    priceId: null,
     summary: "For solo builders who want the architecture, the site, and the first living slice.",
     bullets: [
       "Website + docs",
@@ -89,7 +90,8 @@ export const launchPaths = [
   },
   {
     name: "Studio",
-    price: "Invite",
+    price: "$297/mo",
+    priceId: process.env.NEXT_PUBLIC_STRIPE_STUDIO_PRICE_ID || "price_STUDIO-placeholder",
     summary: "For teams shaping internal agent infrastructure and wanting a sharper market-facing front door.",
     bullets: [
       "Expanded docs and launch narrative",
@@ -101,6 +103,7 @@ export const launchPaths = [
   {
     name: "Enterprise Partner",
     price: "Custom",
+    priceId: null,
     summary: "For groups designing controlled agent fabrics, governance layers, and high-trust operational surfaces.",
     bullets: [
       "Security review path",

@@ -1,5 +1,8 @@
+"use client";
+
 import { SectionHeading } from "@/components/section-heading";
 import { launchPaths } from "@/lib/site";
+import { CheckoutButton } from "@/components/checkout-button";
 
 export default function PricingPage() {
   return (
@@ -21,6 +24,18 @@ export default function PricingPage() {
                   <li key={bullet}>{bullet}</li>
                 ))}
               </ul>
+              {path.priceId ? (
+                <CheckoutButton
+                  priceId={path.priceId}
+                  label="Get Started"
+                />
+              ) : path.name === "Enterprise Partner" ? (
+                <a href="mailto:contact@openclaw.ai" className="btn btn-secondary">
+                  Contact Sales
+                </a>
+              ) : (
+                <span className="text-sm text-gray-500">No payment required</span>
+              )}
             </article>
           ))}
         </div>
