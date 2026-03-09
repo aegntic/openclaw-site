@@ -11,7 +11,7 @@ export function Header() {
           <Link href="#pricing">Pricing</Link>
           <Link href="#faq">FAQ</Link>
         </div>
-        <Link className="btn btn-primary" href="#waitlist">Get the Blueprint</Link>
+        <a className="btn btn-primary" href="https://yourdomain.com/buy">Get the Blueprint</a>
       </div>
     </div>
   );

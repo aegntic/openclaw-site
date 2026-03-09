@@ -1,7 +1,193 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
-import { WaitlistForm } from "@/components/waitlist-form";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function HomePage() {
+  useEffect(() => {
+    const wordTargets = document.querySelectorAll(
+      ".hero .eyebrow, .hero .sub, .hero .micro, p.lead, .notice, .price, summary, footer .wrap > div"
+    );
+
+    function splitWordsInNode(node: Node): Node {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent;
+        if (!text?.trim()) return document.createTextNode(text || "");
+        const frag = document.createDocumentFragment();
+        const parts = text.split(/(\s+)/);
+
+        parts.forEach((part) => {
+          if (/^\s+$/.test(part)) {
+            frag.appendChild(document.createTextNode(part));
+            return;
+          }
+
+          if (!part) return;
+
+          const wrap = document.createElement("span");
+          wrap.className = "word-wrap";
+
+          const inner = document.createElement("span");
+          inner.className = "word";
+          inner.setAttribute("aria-hidden", "true");
+          inner.textContent = part;
+
+          wrap.appendChild(inner);
+          frag.appendChild(wrap);
+        });
+
+        return frag;
+      }
+
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const clone = (node as Element).cloneNode(false) as Element;
+        Array.from(node.childNodes).forEach((child) => {
+          clone.appendChild(splitWordsInNode(child));
+        });
+        return clone;
+      }
+
+      return node.cloneNode(true);
+    }
+
+    function splitElement(el: Element) {
+      if ((el as HTMLElement).dataset.splitDone || el.closest(".diag")) return;
+      el.setAttribute("aria-label", el.textContent?.trim() || "");
+
+      const fragment = document.createDocumentFragment();
+      Array.from(el.childNodes).forEach((child) => {
+        fragment.appendChild(splitWordsInNode(child));
+      });
+
+      el.innerHTML = "";
+      el.appendChild(fragment);
+      (el as HTMLElement).dataset.splitDone = "true";
+    }
+
+    wordTargets.forEach(splitElement);
+
+    const heroTimeline = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+    heroTimeline
+      .from(".nav", { y: -24, opacity: 0, duration: 0.7 })
+      .from(".hero .eyebrow .word", { x: 50, opacity: 0, filter: "blur(8px)", stagger: 0.02, duration: 0.8 }, "-=0.25")
+      .from(".hero h1", { y: -120, opacity: 0, scaleY: 0.92, transformOrigin: "50% 0%", duration: 1.05, ease: "bounce.out" }, "-=0.3")
+      .from(".hero .sub .word", { x: -42, opacity: 0, filter: "blur(8px)", stagger: 0.016, duration: 0.82 }, "-=0.62")
+      .from(".hero .cta-row .btn", { y: 22, opacity: 0, stagger: 0.08, duration: 0.7 }, "-=0.55")
+      .from(".hero .micro .word", { x: 30, opacity: 0, stagger: 0.01, duration: 0.6 }, "-=0.55")
+      .from(".hero .hero-card", { y: 36, opacity: 0, scale: 0.985, stagger: 0.12, duration: 0.9 }, "-=0.5");
+
+    gsap.utils.toArray(".section-heading").forEach((el) => {
+      gsap.from(el as Element, {
+        y: -34,
+        opacity: 0,
+        duration: 0.72,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el as Element,
+          start: "top 86%",
+          once: true
+        }
+      });
+    });
+
+    gsap.utils.toArray("p.lead, .notice, .price, summary, footer .wrap > div").forEach((el, index) => {
+      const words = (el as Element).querySelectorAll(".word");
+      if (!words.length) return;
+
+      gsap.from(words, {
+        x: index % 2 === 0 ? -18 : 18,
+        opacity: 0,
+        filter: "blur(2px)",
+        stagger: 0.008,
+        duration: 0.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: el as Element,
+          start: "top 90%",
+          once: true
+        }
+      });
+    });
+
+    gsap.utils.toArray(".item, .kpi, details, #pricing .card, section > .wrap > .card").forEach((el, index) => {
+      gsap.from(el as Element, {
+        x: index % 2 === 0 ? -28 : 28,
+        y: 8,
+        opacity: 0,
+        duration: 0.68,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el as Element,
+          start: "top 91%",
+          once: true
+        }
+      });
+    });
+
+    gsap.to(".hero .hero-card:first-child", {
+      y: 10,
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: 1
+      }
+    });
+
+    gsap.to(".hero .hero-card:last-child", {
+      y: -10,
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: 1
+      }
+    });
+
+    gsap.from(".sticky-cta", {
+      y: 24,
+      opacity: 0,
+      duration: 0.7,
+      delay: 0.5,
+      ease: "power3.out"
+    });
+
+    const buttons = document.querySelectorAll(".btn");
+    buttons.forEach((btn) => {
+      gsap.set(btn, { y: 2 });
+
+      btn.addEventListener("mouseenter", () => {
+        gsap.to(btn, { y: -4, scale: 1.012, duration: 0.24, ease: "power2.out", overwrite: true });
+      });
+
+      btn.addEventListener("mouseleave", () => {
+        gsap.to(btn, { y: 2, scale: 1, duration: 0.28, ease: "power2.out", overwrite: true });
+      });
+
+      function press() {
+        const restingY = btn.matches(":hover") ? -4 : 2;
+        gsap.timeline({ defaults: { overwrite: true } })
+          .to(btn, { y: 7, scale: 0.985, duration: 0.08, ease: "power2.in" })
+          .to(btn, { y: -8, scale: 1.018, duration: 0.34, ease: "elastic.out(1, 0.45)" })
+          .to(btn, { y: restingY, scale: 1, duration: 0.18, ease: "power2.out" });
+      }
+
+      btn.addEventListener("mousedown", press);
+      btn.addEventListener("keydown", (e) => {
+        if ((e as KeyboardEvent).key === "Enter" || (e as KeyboardEvent).key === " ") press();
+      });
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
+
   return (
     <>
       <section className="hero">
@@ -14,8 +200,8 @@ export default function HomePage() {
           </h1>
           <p className="sub">A simple, sharp blueprint for <strong>OpenClaw multi-agent architecture</strong>: <strong>Genesis Agent</strong>, <strong>Agent Registry</strong>, <strong>Scheduler</strong>, <strong>Dispatcher</strong>, <strong>Lifecycle</strong>, <strong>Contracts</strong>, and the specialist AI worker pattern that actually scales.</p>
           <div className="cta-row">
-            <Link className="btn btn-primary" href="#waitlist">Get instant access — $29</Link>
-            <Link className="btn btn-secondary" href="#free">Read the free alpha first</Link>
+            <a className="btn btn-primary" href="https://yourdomain.com/buy">Get instant access — $29</a>
+            <a className="btn btn-secondary" href="#free">Read the free alpha first</a>
           </div>
           <div className="micro">Useful immediately. No fluff. No inflated guru haze. Built for people already in the arena.</div>
 
@@ -69,7 +255,7 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
               </div>
               <div className="item">
                 <h3>3. Create a registry before you create more agents</h3>
-                <p>If you cannot answer "who can do what, with which tools, in which state, under which constraints?" then you do not yet have an ecosystem. You have a pile.</p>
+                <p>If you cannot answer &quot;who can do what, with which tools, in which state, under which constraints?&quot; then you do not yet have an ecosystem. You have a pile.</p>
               </div>
             </div>
             <div className="list">
@@ -79,7 +265,7 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
               </div>
               <div className="item">
                 <h3>5. Use lifecycle states</h3>
-                <p>Draft. Validated. Registered. Active. Dormant. Paused. Degraded. Quarantined. Deprecated. Retired. Broken systems often fail simply because everything is treated as permanently "active."</p>
+                <p>Draft. Validated. Registered. Active. Dormant. Paused. Degraded. Quarantined. Deprecated. Retired. Broken systems often fail simply because everything is treated as permanently &quot;active.&quot;</p>
               </div>
               <div className="item">
                 <h3>6. Externalize outputs as artifacts</h3>
@@ -150,8 +336,8 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
                 <div className="price">$29 <span className="strike">$79</span></div>
                 <p className="muted">One-time. Digital delivery. Start with the free alpha on this page, then take the compressed full stack when you want the clean architecture in one place.</p>
                 <div className="cta-row">
-                  <Link className="btn btn-primary" href="#waitlist">Buy the blueprint</Link>
-                  <Link className="btn btn-secondary" href="#faq">See FAQ</Link>
+                  <a className="btn btn-primary" href="https://yourdomain.com/buy">Buy the blueprint</a>
+                  <a className="btn btn-secondary" href="#faq">See FAQ</a>
                 </div>
               </div>
             </div>
@@ -176,7 +362,7 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
           <div className="faq">
             <details open>
               <summary>Is this for beginners?</summary>
-              <p className="muted">It is written simply, but it is aimed at people already building or planning agent systems. If you have ever felt your "main agent" was trying to do too much, this is for you.</p>
+              <p className="muted">It is written simply, but it is aimed at people already building or planning agent systems. If you have ever felt your &quot;main agent&quot; was trying to do too much, this is for you.</p>
             </details>
             <details>
               <summary>Is the free material on this page actually enough to help?</summary>
@@ -194,23 +380,8 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
         </div>
       </section>
 
-      <section id="waitlist">
-        <div className="wrap two-column">
-          <div>
-            <h2 className="section-heading">Get early access</h2>
-            <p className="lead">Join the waitlist to get notified when the full blueprint launches, plus early supporter pricing.</p>
-            <div className="notice">Push this repo to GitHub, wire your environment variables, and you have a serious product front door that can deploy to Netlify or Cloudflare in one move.</div>
-          </div>
-          <div className="contact-panel">
-            <h3>Join the OpenClaw waitlist</h3>
-            <p>Tell us what you&apos;re building, what&apos;s currently failing, and where you need the system to stop acting like mush.</p>
-            <WaitlistForm />
-          </div>
-        </div>
-      </section>
-
       <div className="sticky-cta">
-        <Link className="btn btn-primary" href="#waitlist">Get the Blueprint — $29</Link>
+        <a className="btn btn-primary" href="https://yourdomain.com/buy">Get the Blueprint — $29</a>
       </div>
     </>
   );
