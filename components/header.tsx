@@ -11,7 +11,7 @@ export function Header() {
           <Link href="#pricing">Pricing</Link>
           <Link href="#faq">FAQ</Link>
         </div>
-        <a className="btn btn-primary" href="https://yourdomain.com/buy">Get the Blueprint</a>
+        <a className="btn btn-primary" href="https://buy.stripe.com/test_bJebJ199R3rgguR9I9abK00">Get the Blueprint</a>
       </div>
     </div>
   );
