@@ -262,6 +262,7 @@ export default function HomePage() {
           <h1>
             <span className="hero-line hero-line-primary">Stop building one</span>
             <span className="hero-line hero-line-primary">overloaded AI agent.</span>
+            <br />
             <span className="hero-line hero-line-secondary">Build an agent civilization instead.</span>
           </h1>
           <p className="sub">A simple, sharp blueprint for <strong>OpenClaw multi-agent architecture</strong>: <strong>Genesis Agent</strong>, <strong>Agent Registry</strong>, <strong>Scheduler</strong>, <strong>Dispatcher</strong>, <strong>Lifecycle</strong>, <strong>Contracts</strong>, and the specialist AI worker pattern that actually scales.</p>
