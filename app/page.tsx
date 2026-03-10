@@ -1,13 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { CheckoutModal } from "@/components/checkout-modal";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function HomePage() {
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenCheckout = () => setIsCheckoutOpen(true);
+    window.addEventListener("openCheckout", handleOpenCheckout);
+    return () => window.removeEventListener("openCheckout", handleOpenCheckout);
+  }, []);
+
   useEffect(() => {
     const wordTargets = document.querySelectorAll(
       ".hero .eyebrow, .hero .sub, .hero .micro, p.lead, .notice, summary, footer .wrap > div"
@@ -257,7 +266,7 @@ export default function HomePage() {
           </h1>
           <p className="sub">A simple, sharp blueprint for <strong>OpenClaw multi-agent architecture</strong>: <strong>Genesis Agent</strong>, <strong>Agent Registry</strong>, <strong>Scheduler</strong>, <strong>Dispatcher</strong>, <strong>Lifecycle</strong>, <strong>Contracts</strong>, and the specialist AI worker pattern that actually scales.</p>
           <div className="cta-row">
-            <a className="btn btn-primary" href="https://buy.stripe.com/test_bJebJ199R3rgguR9I9abK00">Get instant access</a>
+            <button className="btn btn-primary" onClick={() => setIsCheckoutOpen(true)}>Get instant access</button>
             <a className="btn btn-secondary" href="#free">Read the free alpha first</a>
           </div>
           <div className="micro">Useful immediately. No fluff. No inflated guru haze. Built for people already in the arena.</div>
@@ -400,7 +409,7 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
                 <p className="muted">One-time payment. <strong>No subscription.</strong> No recurring fees. Ever.</p>
                 <p className="muted" style={{marginTop:"8px"}}>Digital delivery. Start with the free alpha on this page, then take the compressed full stack when you want the clean architecture in one place.</p>
                 <div className="cta-row">
-                  <a className="btn btn-primary" href="https://buy.stripe.com/test_bJebJ199R3rgguR9I9abK00">Buy the blueprint</a>
+                  <button className="btn btn-primary" onClick={() => setIsCheckoutOpen(true)}>Buy the blueprint</button>
                   <a className="btn btn-secondary" href="#faq">See FAQ</a>
                 </div>
               </div>
@@ -443,6 +452,8 @@ Evaluator / Repair / Policy / Lifecycle`}</div>
           </div>
         </div>
       </section>
+
+      <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
 
     </>
   );
