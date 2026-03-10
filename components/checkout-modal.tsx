@@ -10,6 +10,9 @@ interface CheckoutModalProps {
 export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [newsletter, setNewsletter] = useState(true);
 
   useEffect(() => {
     if (isOpen) {
@@ -23,6 +26,19 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   }, [isOpen]);
 
   const handleCheckout = async () => {
+    if (!email.trim()) {
+      setError("Please enter your email address");
+      return;
+    }
+    if (!email.includes("@")) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    if (!name.trim()) {
+      setError("Please enter your name");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -30,7 +46,11 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          email: email.trim(),
+          name: name.trim(),
+          newsletter,
+        }),
       });
 
       const data = await response.json();
@@ -70,6 +90,44 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               <span className="checkout-item-desc">Digital download, instant access</span>
             </div>
             <div className="checkout-item-price">$29</div>
+          </div>
+
+          <div className="checkout-divider" />
+
+          <div className="checkout-form">
+            <label className="checkout-label">
+              <span>Email address</span>
+              <input
+                type="email"
+                className="checkout-input"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+            </label>
+
+            <label className="checkout-label">
+              <span>Full name</span>
+              <input
+                type="text"
+                className="checkout-input"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={loading}
+              />
+            </label>
+
+            <label className="checkout-checkbox">
+              <input
+                type="checkbox"
+                checked={newsletter}
+                onChange={(e) => setNewsletter(e.target.checked)}
+                disabled={loading}
+              />
+              <span>Send me updates on new agent architecture patterns</span>
+            </label>
           </div>
 
           <div className="checkout-divider" />
