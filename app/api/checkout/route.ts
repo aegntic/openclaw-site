@@ -1,67 +1,69 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getStripeInstance } from "@/lib/stripe";
 
-export async function POST(req: NextRequest) {
+const ALLOWED_PLANS: Record<string, string> = {
+  studio: process.env.NEXT_PUBLIC_STRIPE_STUDIO_PRICE_ID || "",
+};
+
+export async function POST(request: NextRequest) {
   try {
-    const body = await req.json();
-    const { email, name, newsletter, successUrl, cancelUrl } = body;
+    const body = await request.json();
+    const { priceId, plan, successUrl, cancelUrl } = body;
 
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-    if (!stripeSecretKey) {
-      return NextResponse.json({ error: "Stripe key not configured" }, { status: 500 });
+    if (plan && plan in ALLOWED_PLANS) {
+      const validPriceId = ALLOWED_PLANS[plan];
+      if (!validPriceId) {
+        return NextResponse.json(
+          { error: "Plan not configured for checkout" },
+          { status: 400 }
+        );
+      }
+    } else if (priceId) {
+      const isAllowed = Object.values(ALLOWED_PLANS).includes(priceId);
+      if (!isAllowed) {
+        return NextResponse.json(
+          { error: "Invalid price ID" },
+          { status: 400 }
+        );
+      }
+    } else {
+      return NextResponse.json(
+        { error: "priceId or plan is required" },
+        { status: 400 }
+      );
     }
 
-    // Log customer data for CRM/newsletter purposes
-    console.log("Checkout initiated:", {
-      email,
-      name,
-      newsletter,
-      timestamp: new Date().toISOString(),
+    const validPriceId = priceId || ALLOWED_PLANS[plan];
+
+    let stripe;
+    try {
+      stripe = getStripeInstance();
+    } catch {
+      return NextResponse.json(
+        { error: "Checkout is not configured yet" },
+        { status: 503 }
+      );
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price: validPriceId,
+          quantity: 1,
+        },
+      ],
+      success_url: successUrl || `${request.nextUrl.origin}/pricing?success=true`,
+      cancel_url: cancelUrl || `${request.nextUrl.origin}/pricing?canceled=true`,
     });
 
-    // Build form data for Stripe
-    const formData: string[] = [
-      "mode=payment",
-      "payment_method_types[]=card",
-      "line_items[0][quantity]=1",
-      "line_items[0][price_data][currency]=usd",
-      "line_items[0][price_data][unit_amount]=2900",
-      "line_items[0][price_data][product_data][name]=OpenClaw Agent Blueprint",
-      "line_items[0][price_data][product_data][description]=Complete multi-agent architecture blueprint",
-      `success_url=${encodeURIComponent(successUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/?success=true`)}`,
-      `cancel_url=${encodeURIComponent(cancelUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/?canceled=true`)}`,
-    ];
-
-    // Add customer email and name if provided (pre-fills Stripe checkout)
-    if (email) {
-      formData.push(`customer_email=${encodeURIComponent(email)}`);
-    }
-    if (name) {
-      formData.push(`customer_name=${encodeURIComponent(name)}`);
-    }
-
-    // Add metadata for tracking
-    formData.push(`metadata[newsletter]=${newsletter ? "true" : "false"}`);
-    formData.push(`metadata[source]=openclaw-site`);
-
-    const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${stripeSecretKey}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: formData.join("&"),
-    });
-
-    if (!response.ok) {
-      const error = await response.text();
-      console.error("Stripe error:", error);
-      return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
-    }
-
-    const session = await response.json();
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    console.error("Checkout error:", error);
-    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
+    console.error("Stripe checkout error:", error);
+    return NextResponse.json(
+      { error: "Failed to create checkout session" },
+      { status: 500 }
+    );
   }
 }
