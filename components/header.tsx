@@ -3,6 +3,10 @@
 import Link from "next/link";
 
 export function Header() {
+  const handleOpenCheckout = () => {
+    window.dispatchEvent(new Event("openCheckout"));
+  };
+
   return (
     <div className="nav">
       <div className="wrap nav-inner">
@@ -13,7 +17,9 @@ export function Header() {
           <Link href="#pricing">Pricing</Link>
           <Link href="#faq">FAQ</Link>
         </div>
-        <a className="btn btn-primary" href="/pricing">Get the Blueprint</a>
+        <button className="btn btn-primary" type="button" onClick={handleOpenCheckout}>
+          Get the Blueprint
+        </button>
       </div>
     </div>
   );

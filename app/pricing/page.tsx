@@ -19,6 +19,9 @@ function PricingContent() {
   const searchParams = useSearchParams();
   const success = searchParams.get("success");
   const canceled = searchParams.get("canceled");
+  const openCheckout = () => {
+    window.dispatchEvent(new Event("openCheckout"));
+  };
 
   return (
     <div className="page-hero">
@@ -51,9 +54,9 @@ function PricingContent() {
                 ))}
               </ul>
               {path.name === "Studio" ? (
-                <a href="/contact" className="btn btn-primary">
-                  Request Studio Access
-                </a>
+                <button className="btn btn-primary" type="button" onClick={openCheckout}>
+                  Buy the blueprint
+                </button>
               ) : path.name === "Enterprise Partner" ? (
                 <a href="mailto:contact@openclaw.ai?subject=Enterprise%20Partner%20Inquiry" className="btn btn-secondary">
                   Contact Sales
