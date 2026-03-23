@@ -8,7 +8,7 @@ const ALLOWED_PLANS: Record<string, string> = {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { priceId, plan, successUrl, cancelUrl } = body;
+    const { priceId, plan, successUrl, cancelUrl, email, name, newsletter } = body;
 
     if (plan && plan in ALLOWED_PLANS) {
       const validPriceId = ALLOWED_PLANS[plan];
@@ -48,12 +48,17 @@ export async function POST(request: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
+      customer_email: typeof email === "string" ? email : undefined,
       line_items: [
         {
           price: validPriceId,
           quantity: 1,
         },
       ],
+      metadata: {
+        name: typeof name === "string" ? name : "",
+        newsletter: newsletter ? "true" : "false",
+      },
       success_url: successUrl || `${request.nextUrl.origin}/pricing?success=true`,
       cancel_url: cancelUrl || `${request.nextUrl.origin}/pricing?canceled=true`,
     });

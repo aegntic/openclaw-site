@@ -13,6 +13,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [newsletter, setNewsletter] = useState(true);
+  const paymentLink = process.env.NEXT_PUBLIC_STRIPE_STUDIO_PAYMENT_LINK;
 
   useEffect(() => {
     if (isOpen) {
@@ -26,6 +27,11 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   }, [isOpen]);
 
   const handleCheckout = async () => {
+    if (paymentLink) {
+      window.location.href = paymentLink;
+      return;
+    }
+
     if (!email.trim()) {
       setError("Please enter your email address");
       return;
