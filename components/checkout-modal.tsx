@@ -47,6 +47,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          plan: "studio",
           email: email.trim(),
           name: name.trim(),
           newsletter,
